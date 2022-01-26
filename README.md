@@ -9,16 +9,11 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/tvdsluijs/delta-fiber-postal-faker">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
-  <h3 align="center">delta fiber postal faker</h3>
+  <h2 align="center">Delta fiber postal faker</h2>
 
   <p align="center">
-    Een script om te kijken welke adressen in mijn dorp Glasvezel kunnen krijgen, en daarmee direct proberen om delta zover te krijgen om Glasvezel te gaan leggen in mijn Dorp!
-    <br />
-    <a href="https://github.com/tvdsluijs/delta-fiber-postal-faker"><strong>Explore the docs »</strong></a>
+    A script to see which addresses in my village can get Fiber Optic, and immediately try to get delta to install Fiber in my Village!
     <br />
     <br />
     <a href="https://github.com/tvdsluijs/delta-fiber-postal-faker/issues">Report Bug</a>
@@ -93,7 +88,6 @@ If you cannot use the requirements.txt you will need to install the following pa
 ```sh
 pip install requests
 pip install tqdm
-
 ```
 
 There's some manual stuff you need to do before you can use this script!
