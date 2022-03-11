@@ -1,4 +1,24 @@
+#!python
+
 # postcode.tech for API
+
+# er zit wel iets van handwerk aan dit script!
+# belangrijkste is dat je even de postcodes.csv vult
+# voor mijn dorp heb ik de gegevens hiervandaan gehaald
+# https://postcodebijadres.nl/4443
+# even de straatnamen er uit en alles splitsen met een ;
+# zodat je de volgende regels krijgt.
+# 4443AA;1;39
+# postcode;starthuisnummer;eindhuisnummer
+# daarna even een API token halen bij postcode.tech
+# en die plaats je in een config.ini (voorbeeld: config_sample.ini)
+# daarin staat dan zo iets als:
+# [postcode_api]
+# token: 49102cb3-07ce-4e42-a0b2-742663393a54 (dit is een nep token)
+# vergeet niet om een .venv op te zetten :-)
+# python -m venv .venv
+# en daarna (als je in je venv werkt)
+# pip install -r requirements.txt
 
 import sys
 import csv
@@ -90,13 +110,13 @@ class DeltaFiber():
            self.databaseConnect()
         try:
             self.c.execute(f"""
-            SELECT postalcode, housenumber
+            SELECT COUNT(*) as nr
             FROM postalcodes
             WHERE postalcode = '{zipcode}'
             AND housenumber = {housenumber}
             """)
-
-            return self.c.fetchone()
+            data = self.c.fetchone()
+            return data[0]
         except Exception as e:
             sys.exit(f"We have an error: {e}\n", traceback.format_exc())
 
@@ -148,7 +168,7 @@ class DeltaFiber():
                 for i in tqdm(range(huis_start, huis_stop), desc=f"{postcode} from {huis_start} to {huis_stop}", leave=False):
                     # does it exist in de database? No is process
                     if not self.selectPostCodeNr(zipcode=postcode, housenumber=i):
-
+                        # We have to wait a bit as the postcode check does not let you check more then one every sec
                         for sec in tqdm(range(2, 10), desc="Waiting for next check!", leave=False, bar_format='Waiting .... {remaining}'):
                             sleep(1)
 
@@ -159,6 +179,9 @@ class DeltaFiber():
 
                             #save data in sqlite database
                             self.savePostCodeNr(zipcode=postcode, housenumber=i, message=data['Title'], gaaction=data['GAAction'], galabel=data['GALabel'])
+                        else:
+                            # if the postcode / nr does not exist just save in the database it does not exsist!
+                            self.savePostCodeNr(zipcode=postcode, housenumber=i, message="Postal / House nr does not exist!", gaaction="", galabel="")
 
 if __name__ == "__main__":
     df = DeltaFiber()
